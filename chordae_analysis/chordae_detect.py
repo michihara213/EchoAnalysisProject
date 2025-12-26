@@ -50,7 +50,7 @@ def _get_rois_coordinates(img_shape: Tuple[int, ...], bbox: np.ndarray) -> Tuple
     ly2 = min(h, y2 + extend_px)
     return (x1, y1, x2, y2), (lx1, y1, lx2, ly2)
 
-def analyze_chord(img: np.ndarray, bbox: np.ndarray) -> Tuple[int, float]:
+def analyze_chordae(img: np.ndarray, bbox: np.ndarray) -> Tuple[int, float]:
     """腱索の接続状態を判定する (1=Connected, 0=None)"""
     valve_coords, left_coords = _get_rois_coordinates(img.shape, bbox)
     if valve_coords is None or left_coords is None:
@@ -84,7 +84,7 @@ def visualize_results(img: np.ndarray, bbox: np.ndarray, label: int = None) -> n
         vis_img[ly1:ly2, lx1:lx2] = cv2.cvtColor(l_roi, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(vis_img, (lx1, ly1), (lx2, ly2), (0, 255, 255), 2)
     if label is not None:
-        text = "Chord: Connected" if label == 1 else "Chord: None"
+        text = "Chordae: Connected" if label == 1 else "Chordae: None"
         color = (0, 0, 255) if label == 1 else (0, 255, 255)
         cv2.putText(vis_img, text, (20, vis_img.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 6, cv2.LINE_AA)
         cv2.putText(vis_img, text, (20, vis_img.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3, cv2.LINE_AA)

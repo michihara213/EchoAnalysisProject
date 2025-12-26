@@ -4,10 +4,11 @@ import cv2
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix
 from ultralytics import YOLO
-import chord_detect as cd
+import chordae_detect as cd
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Chord Detection Evaluation")
+    """コマンドライン引数を解析し、設定値を取得する"""
+    parser = argparse.ArgumentParser(description="Chordae Detection Evaluation")
     parser.add_argument("--model", type=str, default="../models/best.pt", help="Path to YOLO model")
     parser.add_argument("--pos_dir", type=str, required=True, help="Connected images dir")
     parser.add_argument("--neg_dir", type=str, required=True, help="None images dir")
@@ -15,6 +16,7 @@ def get_args():
     return parser.parse_args()
 
 def process_directory(model, dir_path, gt_label, output_base, mv_class_ids):
+    """指定ディレクトリ内の画像を順次処理し、正誤判定結果を返す"""
     y_true, y_pred = [], []
     undetected = 0
     if not os.path.exists(dir_path):
@@ -39,7 +41,7 @@ def process_directory(model, dir_path, gt_label, output_base, mv_class_ids):
         save_subdir = "undetected"
         pred_label = 0
         if best_box:
-            pred_label, _ = cd.analyze_chord(img, best_box['xyxy'])
+            pred_label, _ = cd.analyze_chordae(img, best_box['xyxy'])
             if gt_label == 1: save_subdir = "TP" if pred_label == 1 else "FN"
             else: save_subdir = "FP" if pred_label == 1 else "TN"
             y_true.append(gt_label)
@@ -54,6 +56,7 @@ def process_directory(model, dir_path, gt_label, output_base, mv_class_ids):
     return y_true, y_pred, undetected
 
 def main():
+    """モデルの読み込みと評価プロセス全体を実行する"""
     args = get_args()
     if not os.path.exists(args.model):
         raise FileNotFoundError(f"Model not found: {args.model}")
