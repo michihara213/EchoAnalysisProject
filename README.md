@@ -17,7 +17,7 @@
 - **目的:** 左心室壁が途切れていないか（閉ループか）を判定します。
 - **手法:** 扇形マスク処理、モルフォロジー演算、輪郭の階層構造解析。
 
-### 📂 [chord_analysis/](chord_analysis/) (Research Topic ⑥)
+### 📂 [chordae_analysis/](chordae_analysis/) (Research Topic ⑥)
 **僧帽弁と腱索の繋がり検出 (MV & Chordae Connection Detection)**
 - **目的:** 僧帽弁の先端が腱索と繋がって見えているか（断裂していないか）を判定します。
 - **手法:** YOLOv8による物体検出 + ROI定義による輝度比率解析。
