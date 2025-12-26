@@ -8,11 +8,16 @@ from echo_loop import create_fan_mask, get_contour_depths, PARAMS
 
 # ★ここに実際の動画ファイル名をリストしてください
 VIDEO_LIST = [
-    "NAKANO1.mp4", "NAKANO2.mp4", "NAKANO4.mp4",
-    "SHU1.mp4", "SHU2.mp4", "SHU3.mp4"
+    "Sample1.mp4", 
+    "Sample2.mp4", 
+    "Sample3.mp4",
+    "Sample4.mp4", 
+    "Sample5.mp4", 
+    "Sample6.mp4"
 ]
 
 def analyze_video_series(video_files):
+    """指定された動画リストに対し、開閉ループ判定処理を連続実行してCSVログを出力する"""
     k_box = (PARAMS['blur_ksize'], PARAMS['blur_ksize'])
     k_morph = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (PARAMS['morph_ksize'], PARAMS['morph_ksize']))
     for video_path in video_files:
@@ -50,6 +55,7 @@ def analyze_video_series(video_files):
         cap.release()
 
 def evaluate_results(video_files):
+    """出力されたCSVログと正解データを比較し、精度評価（Accuracy, Precision, Recall, F1）を行う"""
     metrics = {'acc': [], 'prec': [], 'rec': [], 'f1': []}
     print("\n--- Evaluation ---")
     for path in video_files:

@@ -1,38 +1,35 @@
 # Echo Analysis Project (心エコー画像解析プロジェクト)
 
-本リポジトリは、心エコー動画・画像を解析するための統合プロジェクトです。
-解析タスクごとにモジュールが分かれており、拡張性を考慮した設計となっています。
+本リポジトリは、自動探査型心エコー検査ロボット「ORIZURU」によって取得された心エコー動画・画像の品質を自動評価するための統合解析プロジェクトです。
+診断に重要な「傍胸骨左室長軸断面 (PLAX)」の描出品質を定量化するため、以下の3つの解析モジュールを実装しています。
 
 ## ディレクトリ構成
 
-### 📂 chord_analysis/ (腱索断裂判定)
-僧帽弁の腱索（Chord）が正常に接続されているか、断裂しているかを判定します。
-- **手法:** YOLOv8による弁検出 + 輝度比率解析
-- **メインスクリプト:** `chord_evaluation.py`
+各モジュールの詳細な仕様や実行方法については、リンク先の `README.md` を参照してください。
 
-### 📂 loop_analysis/ (ループ動作解析)
-心エコー動画から弁の開閉動作（Open / Close）を時系列で解析します。
-- **手法:** 扇形マスク処理 + 輪郭階層解析
-- **メインスクリプト:** `echo_loop.py` (単体), `sixvideo_research.py` (一括)
+### 📂 [lv_analysis/](lv_analysis/) (Research Topic ①)
+**左心室検出 (Left Ventricle Detection)**
+- **目的:** 左心室が適切に描出されているか、解剖学的特徴に基づいて判定します。
+- **手法:** 外部学習済みモデル（U-Netベース）によるセグメンテーションと幾何学的処理（2次関数フィッティング）による領域の一致率解析。
+
+### 📂 [loop_analysis/](loop_analysis/) (Research Topic ②)
+**左心室 開・閉ループ判定 (LV Open/Closed Loop Judgment)**
+- **目的:** 左心室壁が途切れていないか（閉ループか）を判定します。
+- **手法:** 扇形マスク処理、モルフォロジー演算、輪郭の階層構造解析。
+
+### 📂 [chord_analysis/](chord_analysis/) (Research Topic ⑥)
+**僧帽弁と腱索の繋がり検出 (MV & Chordae Connection Detection)**
+- **目的:** 僧帽弁の先端が腱索と繋がって見えているか（断裂していないか）を判定します。
+- **手法:** YOLOv8による物体検出 + ROI定義による輝度比率解析。
 
 ### 📂 models/
-- 各解析で使用する学習済みモデル（`best.pt` 等）を格納します。
+- 腱索検出で使用する学習済みモデル（`best.pt`）を格納するディレクトリです。
 
 ---
 
-## 実行方法
+## 環境構築
 
-1. 必要なライブラリをインストール
-   ```bash
-   pip install -r requirements.txt
+本プロジェクトの実行に必要なライブラリを一括でインストールします。
 
-2. 腱索判定 (Chord Analysis)
-   python chord_analysis/chord_evaluation.py --pos_dir "path/to/pos" --neg_dir "path/to/neg"
-
-3. ループ解析 (Loop Analysis)
-   # 単体実行
-   python loop_analysis/echo_loop.py "video.mp4"
-
-   # 一括実行 (事前にスクリプト内のVIDEO_LISTを編集してください)
-   cd loop_analysis
-   python sixvideo_research.py
+```bash
+pip install -r requirements.txt

@@ -31,7 +31,7 @@ def _process_roi(roi: np.ndarray, noise_thresh: int) -> np.ndarray:
     return processed
 
 def _get_rois_coordinates(img_shape: Tuple[int, ...], bbox: np.ndarray) -> Tuple[Optional[Tuple], Optional[Tuple]]:
-    """バウンディングボックスからROI座標を算出する"""
+    """バウンディングボックスから解析領域の座標を算出する"""
     if bbox is None or len(bbox) < 4:
         return None, None
     h, w = img_shape[:2]
