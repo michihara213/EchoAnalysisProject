@@ -22,7 +22,7 @@
 - **目的:** 僧帽弁の先端が腱索と繋がっていないかを判定すること。
 - **手法:** YOLOv8による物体検出、バウンディングボックス拡張による解析領域の動的定義、および輝度比率を用いた解析。
 
-### 📂 models/
+### 📂 [models/](models/)
 - 腱索検出で使用する学習済みモデル（`best.pt`）を格納するディレクトリです。
 - ※左心室セグメンテーション用の `mymodel_segmentation_1_0.8930.h5` は、[raventan95/echo-plax-segmentation](https://github.com/raventan95/echo-plax-segmentation) からダウンロードして配置してください。
 ---
