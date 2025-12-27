@@ -3,22 +3,21 @@ import cv2
 import csv
 import numpy as np
 import argparse
-
-# 自作モジュールのインポート
 from lv_segment import LVSegmenter
 from lv_geometry import get_geometric_mask, PARAMS
 
-# ★解析対象の動画リスト (sixvideo_research.pyのスタイルを踏襲)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 VIDEO_LIST = [
-    "sample1.mp4",
-    "sample2.mp4",
-    # 必要な動画を追加してください
+    os.path.join(BASE_DIR, "sample1.mp4"),
+    os.path.join(BASE_DIR, "sample2.mp4"),
 ]
 
-# 判定閾値 (Research project記述の「比率」閾値)
-RATIO_THRESHOLD = 0.8
-
 def analyze_video_series(video_files, model_path):
+    """
+    指定された動画リストに対し、AI予測と幾何学手法による左心室面積を算出し、
+    その比率（AI面積 / 幾何学面積）を時系列でCSVログに出力する
+    """
     print("Loading AI Model...")
     segmenter = LVSegmenter(model_path)
 
@@ -29,7 +28,7 @@ def analyze_video_series(video_files, model_path):
             
         print(f"Processing: {video_path}")
         base_name = os.path.splitext(os.path.basename(video_path))[0]
-        csv_out = f"log_{base_name}_lv.csv" 
+        csv_out = os.path.join(BASE_DIR, f"log_{base_name}_lv.csv")
         
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
@@ -38,7 +37,8 @@ def analyze_video_series(video_files, model_path):
             
         with open(csv_out, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(["Frame", "AI_Area", "Geo_Area", "Ratio", "State"])
+            
+            writer.writerow(["Frame", "AI_Area", "Geo_Area", "Ratio"])
             
             frame_idx = 0
             while True:
@@ -52,15 +52,13 @@ def analyze_video_series(video_files, model_path):
                 geo_area = np.count_nonzero(geo_mask)
 
                 ratio = 0.0
-                if geo_area > 0 and ai_area > 0:
-                    ratio = min(ai_area, geo_area) / max(ai_area, geo_area)
+                if geo_area > 0:
+                    ratio = ai_area / geo_area
                 
-                state = "Detected" if ratio > RATIO_THRESHOLD else "Not Detected"
-
-                writer.writerow([frame_idx, ai_area, geo_area, f"{ratio:.4f}", state])
+                writer.writerow([frame_idx, ai_area, geo_area, f"{ratio:.4f}"])
                 
                 if frame_idx % 50 == 0:
-                    print(f"\r Frame {frame_idx}: Ratio={ratio:.2f} ({state})", end="")
+                    print(f"\r Frame {frame_idx}: Ratio={ratio:.2f}", end="")
                 
                 frame_idx += 1
             

@@ -28,8 +28,8 @@ class LVSegmenter:
         モデルをロードし、セグメンテーションの準備を行う
 
         Note:
-            This class utilizes a pre-trained model from the 'echo-plax-segmentation' repository.
-            Original Source: https://github.com/raventan95/echo-plax-segmentation
+            このクラスは 'echo-plax-segmentation' リポジトリの学習済みモデルを利用しています。
+            出典: https://github.com/raventan95/echo-plax-segmentation
         """
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model not found: {model_path}")
