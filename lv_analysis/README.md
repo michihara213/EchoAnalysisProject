@@ -1,4 +1,4 @@
-# Left Ventricle Detection (左心室検出)
+## Left Ventricle Detection (左心室検出)
 
 AIモデルによるセグメンテーションと、画像処理による幾何学的推定を行い、その面積比を時系列データとして取得・記録するモジュールです。
 
